@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My App - Deployed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; text-align: center; background: #f0f0f0; padding: 20px; }
+        input { padding: 12px; width: 70%; font-size: 18px; }
+        button { padding: 12px 20px; font-size: 18px; background: #007bff; color: white; border: none; }
+        .task { padding: 10px; margin: 10px; background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .delete { color: red; cursor: pointer; float: right; }
+    </style>
+</head>
+<body>
+    <h1>My App is LIVE!</h1>
+    <input type="text" id="taskInput" placeholder="Enter anything...">
+    <button onclick="addTask()">Add</button>
+
+    <div id="taskList">
+        {% for task in tasks %}
+            <div class="task">
+                {{ task.name }}
+                <span class="delete" onclick="deleteTask({{ loop.index0 }})">✕</span>
+            </div>
+        {% endfor %}
+    </div>
+
+<script>
+async function addTask() {
+    let input = document.getElementById("taskInput");
+    let response = await fetch('/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'task=' + input.value
+    });
+    let data = await response.json();
+    location.reload(); // simple refresh
+}
+
+async function deleteTask(index) {
+    await fetch('/delete/' + index);
+    location.reload();
+}
+</script>
+</body>
+</html>
